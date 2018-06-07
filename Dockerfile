@@ -6,9 +6,11 @@ RUN apk add --no-cache tini
 COPY package.json .
 
 FROM base AS dependencies
+WORKDIR /home/node/app
 COPY . .
 RUN npm install
 RUN npm run build
 
 FROM nginx as release
-COPY ./build /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+COPY --from=dependencies WORKDIR /home/node/app/build .
