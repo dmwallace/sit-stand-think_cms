@@ -1,0 +1,135 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+/* Demo specifics */
+
+.react-grid-Cell__value div {
+ white-space: normal !important;
+}
+.gridContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.gridContainer > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    position: relative;
+}
+.cardsContainer {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid darkcyan;
+    background-color: rgba(0, 113, 113, 0.08);
+    overflow-y: auto;
+    position: relative;
+    border-radius: 5px;
+}
+
+
+
+.cards {
+    width: 100%;
+    display: grid; /* (1) */
+    grid-template-columns: repeat(auto-fit, 100px); /* (2) */
+    grid-gap: 0.5rem; /* (3) */
+    justify-content: space-between; /* (4) */
+    align-content: flex-start; /* (5) */
+}
+
+.selectable-selectbox {
+    z-index: 9000;
+    position: absolute;
+    cursor: default;
+    background: none;
+    border: 1px dashed grey;
+}
+
+.albums {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.album-label {
+    display: block;
+    margin: 5px 0;
+    font-size: smaller;
+}
+
+.item {
+    position: relative;
+    width: 100px;
+    height: 160px;
+    text-align: center;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.item.not-selectable {
+    background: silver;
+}
+
+.item .tick {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 10px;
+    color: #009688;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.item h2 {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: inherit;
+    font-weight: 600;
+}
+
+.item.selected {
+    background: rebeccapurple;
+    color: white;
+}
+
+.item.selecting {
+    border: 1px solid rebeccapurple;
+}
+
+.not-selectable {
+}
