@@ -4,7 +4,7 @@ services:
     build: .
     user: root
     volumes:
-      - ./build:/usr/share/nginx/html
+      - ./build:/data/www
     container_name: sst-cms
     ports:
       - "3000:80"
