@@ -1,0 +1,9 @@
+version: '3'
+services:
+  sst-cms:
+    build: .
+    user: root
+    working_dir: /usr/share/nginx/html
+    container_name: sst-cms
+    ports:
+      - "3000:80"
