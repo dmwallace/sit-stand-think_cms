@@ -13,4 +13,4 @@ RUN npm run build
 
 FROM nginx as release
 WORKDIR /usr/share/nginx/html
-COPY --from=dependencies WORKDIR /home/node/app/build .
+COPY --from=dependencies /home/node/app/build .
