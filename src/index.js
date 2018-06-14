@@ -9,11 +9,12 @@ import {BrowserRouter} from 'react-router-dom'
 import {ApolloLink} from 'apollo-link';
 import {onError} from "apollo-link-error";
 import {createUploadLink} from 'apollo-upload-client'
+import {apiUrl} from './config';
 
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const httpLink = createUploadLink({uri: 'http://159.89.195.142:4000/graphql'});
+const httpLink = createUploadLink({uri: `${apiUrl}/graphql`});
 
 
 const errorHandler = onError(({graphQLErrors, networkError}) => {
@@ -23,7 +24,8 @@ const errorHandler = onError(({graphQLErrors, networkError}) => {
 		);
 	
 	if (networkError) {
-		console.log(`[Network error]: ${networkError}`);}
+		console.log(`[Network error]: ${networkError}`);
+	}
 });
 
 const middleware = new ApolloLink((operation, forward) => {

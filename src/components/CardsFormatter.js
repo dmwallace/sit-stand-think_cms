@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {withRouter} from 'react-router';
+import {apiUrl} from '../config';
 
 export default withRouter((props) => {
 	//////console.log("props", props);
@@ -34,7 +35,7 @@ export default withRouter((props) => {
 								<div
 									style={{
 										width: 'auto',
-										backgroundImage: `url("${card.image}")`,
+										backgroundImage: `url("${apiUrl}${card.image}")`,
 										backgroundRepeat: 'no-repeat',
 										backgroundSize: 'contain',
 										backgroundPosition: 'center',

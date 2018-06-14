@@ -7,6 +7,7 @@ import {observer} from "mobx-react";
 import {observable} from 'mobx';
 import {SelectableGroup, createSelectable, SelectAll, DeselectAll} from 'react-selectable-fast'
 import {Button} from 'reactstrap';
+import {apiUrl} from "../config";
 
 //console.log("query", query);
 export default compose(
@@ -183,7 +184,7 @@ const Card = ({
 		<div
 			style={{
 				width: 'auto',
-				backgroundImage: `url("${card.image}")`,
+				backgroundImage: `url("${apiUrl}${card.image}")`,
 				backgroundRepeat: 'no-repeat',
 				backgroundSize: 'contain',
 				backgroundPosition: 'center',
