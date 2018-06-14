@@ -1,4 +1,5 @@
 import React from "react";
+import {apiUrl} from "../config";
 
 export default class extends React.Component {
 	render() {
@@ -26,7 +27,7 @@ export default class extends React.Component {
 					}}
 				/>
 				{this.props.value ?
-					<img src={this.props.value} alt="this.props.value" style={{height: '100px'}} onClick={() => {
+					<img src={`${apiUrl}${this.props.value}`} alt="this.props.value" style={{height: '100px'}} onClick={() => {
 						//console.log("yoo");
 						//console.log("this.refs.fileInput", this.refs.fileInput);
 						this.refs.fileInput && this.refs.fileInput.click();
