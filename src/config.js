@@ -1,1 +1,1 @@
-export const apiUrl = `http://159.89.195.142:4000`;
+export const apiUrl = `http://${window.location.hostname}:4000`;

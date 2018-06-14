@@ -37,15 +37,15 @@ query {
 `;
 
 export const upsertMutation = `
-mutation upsert($updatedRows: [deckInput]) {
-	upsertdecks(decks: $updatedRows) {
+mutation upsert($updatedRows: [DeckInput]) {
+	upsertDecks(decks: $updatedRows) {
 		${getFieldsGrqphql(fields)}
 	}
 }
 `;
 
 export const deleteMutation = `
-	mutation delete($rowsToDelete: [deckInput]) {
-		deletedecks(decks: $rowsToDelete)
+	mutation delete($rowsToDelete: [DeckInput]) {
+		deleteDecks(decks: $rowsToDelete)
 	}
 `;

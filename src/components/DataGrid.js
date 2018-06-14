@@ -2,7 +2,7 @@ import React from 'react';
 import {withRouter} from 'react-router';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {observable, computed} from 'mobx';
+import {observable, computed, intercept, autorun, toJS} from 'mobx';
 import {observer} from 'mobx-react';
 import ReactDataGrid from 'react-data-grid';
 import {Route} from 'react-router-dom';
@@ -47,11 +47,14 @@ export default withRouter(observer(class extends React.Component {
 		extraColumns: []
 	};
 	
+	hasIncompleteColumnData = true;
 	@observable columns = [];
 	@observable rows = [];
 	@observable selectedIds = [];
 	
+	
 	getHighestColumnValue(rows, column) {
+		console.log("rows", toJS(rows));
 		return rows.reduce((highest, row) => {
 			if (parseInt(row[column]) > parseInt(highest)) {
 				highest = parseInt(row[column]);
@@ -60,24 +63,50 @@ export default withRouter(observer(class extends React.Component {
 		}, 0);
 	}
 	
-	@computed get nextHighestOrder() {
-		return this.getHighestColumnValue(this.rows, "order") + 1;
-	}
+	/*ensureBlankRow = intercept(this.rows, null, (change)=>{
+		console.log("change.newValue", change.newValue);
+		
+		let rows = change.newValue;
+		
+		if(!rows.length || rows[rows.length -1].id) {
+			let blankRow = this.props.fields.reduce((row, field) => {
+				////console.log("field", field);
+				if (field.key === 'order') {
+					row[field.key] = this.getHighestColumnValue(rows, "order") + 1;
+				} else {
+					row[field.key] = this.props.match.params[field.key] || field.defaultValue || null;
+				}
+				return row;
+			}, {});
+			
+			rows.push(blankRow);
+			
+			change.newValue = rows;
+		}
+		
+		return change;
+	});*/
 	
+	ensureBlankrow = autorun(() => {
+		if (!this.rows.length || this.rows[this.rows.length - 1].id) {
+			if(this.getBlankRow) {
+				this.rows.push(this.getBlankRow());
+			}
+		}
+	});
 	
-	getBlankRow(props) {
-		////console.log("props", props);
-		return props.fields.reduce((row, field) => {
-			////console.log("field", field);
+	getBlankRow = () => {
+		return this.props.fields.reduce((row, field) => {
+			console.log("field", field);
 			if (field.key === 'order') {
-				row[field.key] = this.nextHighestOrder;
+				row[field.key] = this.getHighestColumnValue(this.rows, "order") + 1;
 			} else {
-				row[field.key] = props.match.params[field.key] || field.defaultValue || null;
+				row[field.key] = this.props.match.params[field.key] || field.defaultValue || null;
 			}
 			return row;
 		}, {});
-	}
-	
+	};
+
 	componentWillReceiveProps(nextProps, nextContext) {
 		this.populateData(nextProps);
 	}
@@ -91,7 +120,7 @@ export default withRouter(observer(class extends React.Component {
 	}
 	
 	populateData = (props) => {
-		if (!this.columns.length) {
+		if (!this.columns.length || this.hasIncompleteColumnData) {
 			this.columns = this.createColumns(props);
 		}
 		
@@ -105,22 +134,28 @@ export default withRouter(observer(class extends React.Component {
 	};
 	
 	updateRowOrders = (rows) => {
+		return rows;
+		
 		rows = rows.slice();
 		
 		try {
-			let rowsToUpdateOrder = [];
+			let rowsToUpsert = [];
 			rows.map((row, index) => {
-				if (!isNaN(parseInt(row.id)) && parseInt(row.order) !== index + 1) {
+				if (parseInt(row.order) !== index + 1) {
 					row.order = index + 1;
 					
-					rowsToUpdateOrder.push({id: parseInt(row.id), order: parseInt(row.order)})
+					let updated = {id: parseInt(row.id), order: parseInt(row.order)};
+					
+					if(!isNaN(parseInt(row.id))) {
+						rowsToUpsert.push(updated);
+					}
 				}
 				return row;
 			});
 			
 			//console.log("rowsToUpdateOrder", rowsToUpdateOrder);
-			rowsToUpdateOrder.length > 0 && this.props.upsertMutation({variables: {updatedRows: rowsToUpdateOrder}}).then((result) => {
-				//console.log("result", result);
+			rowsToUpsert.length > 0 && this.props.upsertMutation({variables: {updatedRows: rowsToUpsert}}).then((result) => {
+				console.log("result", result);
 			});
 			
 			return rows;
@@ -130,7 +165,7 @@ export default withRouter(observer(class extends React.Component {
 	}
 	
 	createColumns = (props) => {
-		////console.log("createColumns");
+		console.log("createColumns");
 		//console.log("props.fields", props.fields);
 		//console.log("props.extraColumns", props.extraColumns);
 		
@@ -142,6 +177,8 @@ export default withRouter(observer(class extends React.Component {
 		fields.splice(3, 0, ...props.extraColumns);
 		
 		//fields = props.extraColumns;
+		
+		let hasCompleteColumnData = true;
 		
 		let columns = fields.map((field) => {
 			let column = {
@@ -177,11 +214,15 @@ export default withRouter(observer(class extends React.Component {
 						}
 					}));
 					
-					////console.log("options", options);
+					console.log("options", options);
 					column.editor = <DropDownEditor options={options}/>;
 					column.formatter = <DropDownFormatter options={options} value={null}/>;
+				} else {
+					hasCompleteColumnData = false;
 				}
 			}
+			
+			this.hasIncompleteColumnData = !hasCompleteColumnData;
 			
 			column.getRowMetaData = (row) => row;
 			return column;
@@ -209,7 +250,8 @@ export default withRouter(observer(class extends React.Component {
 				
 				return newRow;
 			}
-		) || []).concat([this.getBlankRow(props)]);
+		) || []);
+		
 		
 		//console.log("this.rows", this.rows);
 	}
@@ -258,7 +300,7 @@ export default withRouter(observer(class extends React.Component {
 	handleGridRowsUpdated = ({fromRow, toRow, updated}) => {
 		////////console.log("fromRow", fromRow);
 		////////console.log("toRow", toRow);
-		////////console.log("updated", updated);
+		console.log("updated", updated);
 		
 		this.props.fields.forEach((field) => {
 			if (field.dropDown && field.nullLabel && updated[field.key] === field.nullLabel) {
@@ -275,38 +317,40 @@ export default withRouter(observer(class extends React.Component {
 			
 			let updatedRow = this.columns.reduce((updatedRow, column) => {
 				////////console.log("updated[column.key]", updated[column.key]);
+				//console.log("column.key", column.key);
+				//console.log("updated[column.key]", updated[column.key]);
+				//console.log("rowToUpdate[column.key]", rowToUpdate[column.key]);
 				
-				if (updated[column.key] !== rowToUpdate[column.key]) {
+				if (updated[column.key] && (updated[column.key] !== rowToUpdate[column.key])) {
 					updatedRow[column.key] = updated[column.key];
 				}
 				
-				if (!rowToUpdate.id && rowToUpdate[column.key]) {
+				if(!rowToUpdate.id && !updated[column.key] && rowToUpdate[column.key]) {
 					updatedRow[column.key] = rowToUpdate[column.key];
 				}
-				
 				return updatedRow;
 			}, {});
 			
 			if (rowToUpdate.id) {
 				updatedRow.id = rowToUpdate.id
-			}
+			} /*else if(rowToUpdate.order) {
+				updatedRow.order = rowToUpdate.order
+			}*/
 			
-			////////console.log("updatedRow", updatedRow);
+			console.log("updatedRow", updatedRow);
+			console.log("updatedRow.image", updatedRow.image);
 			updatedRows.push(updatedRow);
-			rows[i] = updatedRow;
+			rows[i] = {...rows[i], ...updatedRow};
 		}
 		
-		if (toRow === rows.length - 1) {
-			rows.push(this.getBlankRow(this.props));
-		}
 		
 		//let rowsBackup = this.rows.slice();
-		this.rows = rows;
+		//this.rows = rows;
 		
-		//////console.log("updatedRows", updatedRows);
+		console.log("updatedRows", updatedRows);
 		
 		this.props.upsertMutation({variables: {updatedRows}}).then((result) => {
-			////console.log("result", result);
+			console.log("update rows result", result);
 			// todo check for error and revert rowsBackup
 			
 			let results = result.data[Object.keys(result.data)[0]];
@@ -321,6 +365,7 @@ export default withRouter(observer(class extends React.Component {
 			
 		});
 		
+		//this.rows = rows;
 	};
 	
 	
@@ -328,6 +373,8 @@ export default withRouter(observer(class extends React.Component {
 		this.selectedIds = this.selectedIds.filter((id) => id !== null);
 		
 		if (!this.selectedIds.length) return;
+		
+		
 		
 		this.props.deleteMutation({
 			variables: {
@@ -337,9 +384,11 @@ export default withRouter(observer(class extends React.Component {
 			////////console.log("result", result);
 			// todo check for error and undo delete
 			
-			this.rows = this.updateRowOrders(this.rows.filter((row) => !this.selectedIds.find((id) => parseInt(row.id) === parseInt(id))));
-			this.selectedIds = [];
+			
 		});
+		
+		this.rows = this.updateRowOrders(this.rows.filter((row) => !this.selectedIds.find((id) => parseInt(row.id) === parseInt(id))));
+		this.selectedIds = [];
 		
 	}
 	
@@ -351,12 +400,14 @@ export default withRouter(observer(class extends React.Component {
 		////////console.log("this.columns", toJS(this.columns));
 		//console.log("this.props.rowData", this.props.rowData);
 		//console.log("this.columns", this.columns);
-		console.log("this.rows", this.rows);
+		console.log("this.rows", toJS(this.rows));
 		if (!this.props.rowData || !this.columns.length) {
 			return (
 				<Header>loading...</Header>
 			)
 		}
+		
+		
 		return (
 			<div className="flex grow">
 				
