@@ -34,7 +34,6 @@ class App extends Component {
 						</Nav>
 					</Collapse>
 				</Navbar>
-				{/*<Breadcrumbs className="breadcrumb"/>*/}
 				<Switch>
 					<Route exact path="/" component={Home}/>
 					<CrumbRoute title="Classes" exact path="/classes" component={Classes}/>
