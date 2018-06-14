@@ -13,7 +13,7 @@ import {createUploadLink} from 'apollo-upload-client'
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const httpLink = createUploadLink({uri: 'http://localhost:4000/graphql'});
+const httpLink = createUploadLink({uri: 'http://159.89.195.142:4000/graphql'});
 
 
 const errorHandler = onError(({graphQLErrors, networkError}) => {
