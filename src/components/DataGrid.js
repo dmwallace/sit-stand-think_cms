@@ -134,8 +134,6 @@ export default withRouter(observer(class extends React.Component {
 	};
 	
 	updateRowOrders = (rows) => {
-		return rows;
-		
 		rows = rows.slice();
 		
 		try {
@@ -153,7 +151,7 @@ export default withRouter(observer(class extends React.Component {
 				return row;
 			});
 			
-			//console.log("rowsToUpdateOrder", rowsToUpdateOrder);
+			console.log("rowsToUpsert", rowsToUpsert);
 			rowsToUpsert.length > 0 && this.props.upsertMutation({variables: {updatedRows: rowsToUpsert}}).then((result) => {
 				console.log("result", result);
 			});
@@ -184,6 +182,7 @@ export default withRouter(observer(class extends React.Component {
 			let column = {
 				name: field.key,
 				...field,
+				sortable: true,
 			};
 			
 			if (column.type === 'editLink') {
@@ -302,6 +301,13 @@ export default withRouter(observer(class extends React.Component {
 		////////console.log("toRow", toRow);
 		console.log("updated", updated);
 		
+		if(!fromRow) {
+			fromRow = this.rows.length - 1;
+		}
+		if(!toRow) {
+			toRow = this.rows.length -1;
+		}
+		
 		this.props.fields.forEach((field) => {
 			if (field.dropDown && field.nullLabel && updated[field.key] === field.nullLabel) {
 				updated[field.key] = null // stop dropdown label being assigned as value
@@ -349,7 +355,7 @@ export default withRouter(observer(class extends React.Component {
 		
 		console.log("updatedRows", updatedRows);
 		
-		this.props.upsertMutation({variables: {updatedRows}}).then((result) => {
+		return this.props.upsertMutation({variables: {updatedRows}}).then((result) => {
 			console.log("update rows result", result);
 			// todo check for error and revert rowsBackup
 			
@@ -391,6 +397,20 @@ export default withRouter(observer(class extends React.Component {
 		this.selectedIds = [];
 		
 	}
+	
+	handleGridSort = (sortColumn, sortDirection) => {
+		const comparer = (a, b) => {
+			if (sortDirection === 'ASC') {
+				return (!a.id || a[sortColumn].localeCompare(b[sortColumn]));
+			} else if (sortDirection === 'DESC') {
+				return (!a.id || -a[sortColumn].localeCompare(b[sortColumn]));
+			}
+		};
+		
+		const rows = sortDirection === 'NONE' ? this.rows.slice(0) : this.rows.sort(comparer);
+		
+		this.rows = this.updateRowOrders(rows);
+	};
 	
 	render() {
 		////////console.log("this.rows.length", this.rows.length);
@@ -465,15 +485,21 @@ export default withRouter(observer(class extends React.Component {
 				
 				<Header>
 					<h2>{this.props.title}</h2>
-					<p style={{visibility: this.selectedIds.length > 0 ? 'visible' : 'hidden'}}>
-						<Button color="danger" style={{marginRight: '1rem'}}
-						        onClick={this.onDelete}>Delete {this.selectedIds.length} Selected</Button>
-					</p>
+					<div style={{display: 'flex', flexDirection: 'row', height: '3rem', alignItems: 'center'}}>
+						{
+							this.selectedIds.length > 0 &&
+							<Button color="danger" style={{marginRight: '1rem'}}
+							        onClick={this.onDelete}>Delete {this.selectedIds.length} Selected</Button>
+						}
+						{this.props.toolbarComponent && <this.props.toolbarComponent handleGridRowsUpdated={this.handleGridRowsUpdated}/>}
+					</div>
+					
 				
 				</Header>
 				<div className="gridContainer">
 					<DraggableContainer>
 						<HeightAwareDataGrid
+							onGridSort={this.handleGridSort}
 							enableCellSelection={true}
 							rowActionsCell={RowActionsCell}
 							enableCellSelect={true}
