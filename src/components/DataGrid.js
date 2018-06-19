@@ -215,7 +215,7 @@ export default withRouter(observer(class extends React.Component {
 					
 					console.log("options", options);
 					column.editor = <DropDownEditor options={options}/>;
-					column.formatter = <DropDownFormatter options={options} value={null}/>;
+					column.formatter = (props)=> (<DropDownFormatter options={options} value={null}/>);
 				} else {
 					hasCompleteColumnData = false;
 				}
@@ -230,7 +230,10 @@ export default withRouter(observer(class extends React.Component {
 		//columns = extraColumns.concat(columns);
 		//columns = columns.concat(extraColumns);
 		//console.log("columns", columns);
-		return columns;
+		if(hasCompleteColumnData) {
+			return columns;
+		}
+		return this.columns;
 	};
 	
 	createRows = (props) => {
