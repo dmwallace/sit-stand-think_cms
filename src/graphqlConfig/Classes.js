@@ -14,7 +14,7 @@ query {
 }
 `;
 
-//console.log("query", query);
+////console.log("query", query);
 export const upsertMutation = `
 mutation upsert($updatedRows: [ClassInput]) {
 	upsertClasses(classes: $updatedRows) {

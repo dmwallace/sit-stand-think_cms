@@ -12,7 +12,7 @@ export default compose(
 	graphql(gql(upsertMutation), {name: 'upsertMutation'}),
 )(withRouter(observer(class extends React.Component {
 	render() {
-		console.log("this.props", this.props);
+		//console.log("this.props", this.props);
 		return (
 			<DataGrid
 				title="Classes"

@@ -22,7 +22,7 @@ export default compose(
 )(withRouter(observer(class extends React.Component {
 	
 	render() {
-		console.log("this.props.data", this.props.data);
+		//console.log("this.props.data", this.props.data);
 		return (
 			<div className="flex grow">
 				

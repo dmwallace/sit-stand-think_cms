@@ -4,8 +4,8 @@ class HeightAware extends React.Component {
 	state = {};
 	
 	componentDidMount() {
-		//console.log("this.rootNode", this.rootNode);
-		//console.log("this.rootNode.clientHeight", this.rootNode.clientHeight);
+		////console.log("this.rootNode", this.rootNode);
+		////console.log("this.rootNode.clientHeight", this.rootNode.clientHeight);
 		this.updateHeight();
 		
 		window.addEventListener('resize', this.updateHeight);

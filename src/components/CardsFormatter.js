@@ -4,7 +4,7 @@ import {withRouter} from 'react-router';
 import {apiUrl} from '../config';
 
 export default withRouter((props) => {
-	//////console.log("props", props);
+	////////console.log("props", props);
 	
 	return (
 		<Link

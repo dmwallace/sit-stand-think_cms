@@ -21,7 +21,7 @@ export default compose(
 )(withRouter(observer(class extends React.Component {
 	
 	render() {
-		//console.log("this.props", this.props);
+		////console.log("this.props", this.props);
 		return (
 			<DataGrid
 				title="Decks"

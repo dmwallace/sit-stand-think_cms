@@ -30,7 +30,7 @@ const errorHandler = onError(({graphQLErrors, networkError}) => {
 
 const middleware = new ApolloLink((operation, forward) => {
 	// add the authorization to the headers
-	//console.log("operation", operation);
+	////console.log("operation", operation);
 	
 	return forward(operation);
 })

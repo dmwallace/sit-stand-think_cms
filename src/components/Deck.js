@@ -46,7 +46,7 @@ export default compose(
 	graphql(gql(upsertMutation), {name: 'upsertMutation'}),
 )(withRouter(class extends React.Component {
 	render() {
-		console.log("this.props", this.props);
+		//console.log("this.props", this.props);
 		
 		let deck = this.props.data.deck;
 		

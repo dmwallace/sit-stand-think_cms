@@ -28,7 +28,7 @@ export default compose(
 )(withRouter(observer(class extends React.Component {
 	
 	componentWillReceiveProps(nextProps, nextContext) {
-		//console.log("nextProps", nextProps);
+		////console.log("nextProps", nextProps);
 		//this.forceUpdate();
 	}
 	
