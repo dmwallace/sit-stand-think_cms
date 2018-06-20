@@ -128,6 +128,8 @@ export default withRouter(observer(class extends React.Component {
 			this.createRows(props);
 		}
 		
+		console.log("this.rows", toJS(this.rows));
+		
 		setTimeout(() => {
 			window.dispatchEvent(new Event('resize'));
 		}, 0);
@@ -215,7 +217,7 @@ export default withRouter(observer(class extends React.Component {
 					
 					//console.log("options", options);
 					column.editor = <DropDownEditor options={options}/>;
-					column.formatter = (props)=> (<DropDownFormatter options={options} value={null}/>);
+					column.formatter = <DropDownFormatter options={options}/>;
 				} else {
 					hasCompleteColumnData = false;
 				}
