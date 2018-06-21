@@ -35,7 +35,7 @@ export default withRouter((props) => {
 								<div
 									style={{
 										width: 'auto',
-										backgroundImage: `url("${apiUrl}${card.image}")`,
+										backgroundImage: `url("${apiUrl}${card.image}?width=100")`,
 										backgroundRepeat: 'no-repeat',
 										backgroundSize: 'contain',
 										backgroundPosition: 'center',

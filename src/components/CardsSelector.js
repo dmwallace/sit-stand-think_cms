@@ -241,7 +241,7 @@ const Card = ({
 			<div
 				style={{
 					width: 'auto',
-					backgroundImage: `url("${apiUrl}${card.image}")`,
+					backgroundImage: `url("${apiUrl}${card.image}?width=150")`,
 					backgroundRepeat: 'no-repeat',
 					backgroundSize: 'contain',
 					backgroundPosition: 'center',

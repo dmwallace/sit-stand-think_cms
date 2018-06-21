@@ -217,7 +217,7 @@ export default withRouter(observer(class extends React.Component {
 					
 					//console.log("options", options);
 					column.editor = <DropDownEditor options={options}/>;
-					column.formatter = <DropDownFormatter options={options}/>;
+					column.formatter = (props)=> (<DropDownFormatter options={options} {...props}/>);
 				} else {
 					hasCompleteColumnData = false;
 				}

@@ -28,7 +28,7 @@ export default class extends React.Component {
 					}}
 				/>
 				{this.props.value ?
-					<img src={`${apiUrl}${this.props.value}`} alt="this.props.value" style={{height: '100px'}} onClick={() => {
+					<img src={`${apiUrl}${this.props.value}?width=150`} alt="this.props.value" style={{height: '100px'}} onClick={() => {
 						////console.log("yoo");
 						////console.log("this.refs.fileInput", this.refs.fileInput);
 						this.refs.fileInput && this.refs.fileInput.click();
