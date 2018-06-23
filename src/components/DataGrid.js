@@ -314,7 +314,11 @@ export default withRouter(observer(class extends React.Component {
 		}
 		
 		this.props.fields.forEach((field) => {
+			console.log("field", field);
 			if (field.dropDown && field.nullLabel && updated[field.key] === field.nullLabel) {
+				console.log("yoooooo");
+				
+				
 				updated[field.key] = null // stop dropdown label being assigned as value
 			}
 		});
@@ -332,7 +336,7 @@ export default withRouter(observer(class extends React.Component {
 				////console.log("updated[column.key]", updated[column.key]);
 				////console.log("rowToUpdate[column.key]", rowToUpdate[column.key]);
 				
-				if (updated[column.key] && (updated[column.key] !== rowToUpdate[column.key])) {
+				if (updated[column.key] !== undefined && (updated[column.key] !== rowToUpdate[column.key])) {
 					updatedRow[column.key] = updated[column.key];
 				}
 				
