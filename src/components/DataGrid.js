@@ -239,7 +239,7 @@ export default withRouter(observer(class extends React.Component {
 			
 			if(column.multiline) {
 				column.editor = TextAreaEditor;
-				column.formatter = <TextAreaFormatter />;
+				column.formatter = (props)=> (<TextAreaFormatter {...props}/>);
 			} else if (column.type === 'editLink') {
 				column.value = column.key;
 				column.formatter = (localProps) => (<EditButton {...props} {...localProps} label={column.key}/>);
