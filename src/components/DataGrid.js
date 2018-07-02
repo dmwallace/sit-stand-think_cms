@@ -59,7 +59,14 @@ class TextAreaEditor extends React.Component {
 	}
 	
 	handleKeyDown = (e)=> {
+		console.log("e.key", e.key);
+		
+		
 		if (e.key === 'Enter' && e.shiftKey) {
+			e.stopPropagation();
+		}
+		
+		if(e.key.substr(0, 'Arrow'.length) === 'Arrow') {
 			e.stopPropagation();
 		}
 	}
