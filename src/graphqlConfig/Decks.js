@@ -3,7 +3,7 @@ import {getFieldsGrqphql} from "../utils";
 export const fields = [
 	{key: 'id', graphqlType: 'ID', editable: false, width: 100},
 	{key: 'name', graphqlType: 'String', editable: true, width: 200},
-	{key: 'description', graphqlType: 'String', editable: true},
+	{key: 'description', multiline: true, graphqlType: 'String', editable: true},
 	{key: 'order', graphqlType: 'Int', editable: false, width: 100},
 ];
 

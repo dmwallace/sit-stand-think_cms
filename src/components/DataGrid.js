@@ -12,7 +12,7 @@ import HeightAwareDataGrid from './HeightAwareDataGrid';
 import CardsFormatter from './CardsFormatter';
 import ImageUploadFormatter from './ImageUploadFormatter';
 import {Button} from 'reactstrap';
-
+import ReactDOM from 'react-dom';
 const {Editors, Formatters} = require('react-data-grid-addons');
 const {DropDownEditor} = Editors;
 const {DropDownFormatter} = Formatters;
@@ -32,6 +32,49 @@ const EditButton = (props) => {
 		<Link to={`/deck/${props.dependentValues.id}/${props.label}`}>Edit {props.label}</Link> : null;
 };
 
+class TextAreaFormatter extends React.Component {
+	
+	render() {
+		return <div
+			style={{height: '110px', padding: '5px 0'}}
+		>
+			<textarea
+				style={{width: '100%', height: '100px'}}
+				value={this.props.value}
+			/>
+		</div>;
+	}
+}
+
+class TextAreaEditor extends React.Component {
+	getInputNode = ()=> {
+		let domNode = ReactDOM.findDOMNode(this);
+		return domNode.querySelector('textarea');
+	}
+	
+	getValue = ()=> {
+		// return the value depending on the way you decide to store the textarea text.
+		console.log("this.getInputNode()", this.getInputNode());
+		return {[this.props.column.name]: this.getInputNode().value};
+	}
+	
+	handleKeyDown = (e)=> {
+		if (e.key === 'Enter' && e.shiftKey) {
+			e.stopPropagation();
+		}
+	}
+	
+	render() {
+		return <div
+			style={{height: '110px', padding: '0px 8px', boxSizing: 'border-box'}}
+		>
+			<textarea
+				style={{width: '100%', height: '91px'}}
+				onKeyDown={this.handleKeyDown} defaultValue={this.props.value}
+			/>
+		</div>;
+	}
+}
 
 export default withRouter(observer(class extends React.Component {
 	
@@ -187,7 +230,10 @@ export default withRouter(observer(class extends React.Component {
 				sortable: true,
 			};
 			
-			if (column.type === 'editLink') {
+			if(column.multiline) {
+				column.editor = TextAreaEditor;
+				column.formatter = <TextAreaFormatter />;
+			} else if (column.type === 'editLink') {
 				column.value = column.key;
 				column.formatter = (localProps) => (<EditButton {...props} {...localProps} label={column.key}/>);
 			} else if (column.graphqlType === '[Card]') {
@@ -306,6 +352,9 @@ export default withRouter(observer(class extends React.Component {
 		console.log("toRow", toRow);
 		console.log("updated", updated);
 		
+		if(typeof updated === "string") {
+			debugger;
+		}
 		if(fromRow === undefined || fromRow === null) {
 			fromRow = this.rows.length - 1;
 		}

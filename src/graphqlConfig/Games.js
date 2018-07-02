@@ -13,7 +13,7 @@ export const fields = [
 		nullLabel: "Assign class"
 	},
 	{key: 'level', graphqlType: 'Int', editable: true, width: 100},
-	{key: 'instructions', graphqlType: 'String', editable: true, width: 400},
+	{key: 'instructions', graphqlType: 'String', editable: true, width: 400, multiline: true},
 	{key: 'deck_id', graphqlType: 'ID', editable: false, width: 100},
 	{
 		key: 'pool_id',
